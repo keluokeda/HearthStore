@@ -116,7 +116,7 @@ public class CardView extends FrameLayout implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         if(v==this){
-            GameManager.getInstance().useCard(mCard);
+            GameManager.getInstance().useCardFromHand(mCard);
         }
     }
 }

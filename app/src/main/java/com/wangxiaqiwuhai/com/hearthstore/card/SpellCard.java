@@ -13,4 +13,6 @@ public abstract class SpellCard extends AbsCard {
         this.mCardName=cardName;
         this.mDescription=description;
     }
+
+
 }

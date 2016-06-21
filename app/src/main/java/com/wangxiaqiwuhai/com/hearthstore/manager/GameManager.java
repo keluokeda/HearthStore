@@ -2,17 +2,19 @@ package com.wangxiaqiwuhai.com.hearthstore.manager;
 
 import com.wangxiaqiwuhai.com.hearthstore.card.Card;
 import com.wangxiaqiwuhai.com.hearthstore.card.MinionCard;
+import com.wangxiaqiwuhai.com.hearthstore.card.SecretSpellCard;
 import com.wangxiaqiwuhai.com.hearthstore.card.SpellCard;
 import com.wangxiaqiwuhai.com.hearthstore.card.WeaponCard;
+import com.wangxiaqiwuhai.com.hearthstore.interfaces.ICardGroupManager;
 import com.wangxiaqiwuhai.com.hearthstore.interfaces.IDamageExecuter;
 import com.wangxiaqiwuhai.com.hearthstore.interfaces.IDamageManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * 游戏管理工具类
  */
-@SuppressWarnings("unused")
 public abstract class GameManager implements IDamageExecuter {
 
     public static GameManager getInstance() {
@@ -22,10 +24,6 @@ public abstract class GameManager implements IDamageExecuter {
     HeroManager userHeroManager;
     HeroManager enemyManager;
 
-    public void takeDamage(int damage, Card.TargetType targetType) {
-        userHeroManager.takeDamage(damage, targetType);
-        enemyManager.takeDamage(damage, targetType);
-    }
 
     public HeroManager getManager(boolean isHero) {
         return isHero ? userHeroManager : enemyManager;
@@ -107,25 +105,134 @@ public abstract class GameManager implements IDamageExecuter {
     }
 
     /**
-     * 从手牌中拿出一张卡来使用
-     *
-     * @param card 要使用的卡
-     * @return 不会null表示可以使用, null表示不能使用
+     * 判断是否可以使用这张卡牌
+     * @param card
+     * @return true表示可以 false表示不可以
      */
-    public List<Card> useCardFromHand(Card card) {
+    public boolean canUseHandCard(Card card){
         HeroManager heroManager = getManager(card.isUserHero());
         //判断是否有足够的水晶
         if (!heroManager.getICrystalManager().canUseCard(card)) {
-            return null;
+            return false;
         }
         //判断当前卡牌能不能插入目标区域
         if (!canInsertCardToTargetArea(card, heroManager)) {
-            return null;
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 从手牌中拿出一张卡来使用
+     *
+     * @param card 要使用的卡
+     */
+    public void useCardFromHand(Card card) {
+        if(!canUseHandCard(card)){
+            return;
         }
 
-        //判断用户是否指定了目标 没有指定目标就放弃使用
-        return getTargetCardList(card.getTargetType());
+        //获取卡牌目标  法术目标或者 随从战吼目标
+        List<Card> cardList= getTargetCardList(card.getTargetType());
+        if(cardList==null){
+            //没有选择任何目标就放弃使用
+            return;
+        }
 
+        HeroManager heroManager = getManager(card.isUserHero());
+        //扣除水晶
+        heroManager.getICrystalManager().takeCost(card);
+        //从手牌中移除该卡
+        heroManager.getIHandCardManager().remove(card);
+
+        //改变卡牌位置
+        moveHandCardToTargetArea(card);
+
+        //使用卡牌阶段
+        if(!beforeUseHandCard(card,cardList)){
+            return;
+        }
+
+        if(card instanceof MinionCard){
+           playMinionCard(card,cardList);
+
+        }
+
+        beforeUseHandCard(card,cardList);
+
+        card.onBattlecry(cardList);
+
+
+
+
+    }
+
+    /**
+     * 把要使用的手牌移动到他应该去的位置
+     */
+    protected void moveHandCardToTargetArea(Card card){
+
+    }
+
+    /**
+     * 使用一张随从卡
+     */
+    protected void playMinionCard(Card card,List<Card> cardList){
+    }
+
+    /**
+     * 卡牌使用之前询问各个观察者
+     * @param card 被使用的手牌
+     * @return true表示拦截该卡牌使用，后面阶段都不执行
+     */
+    public  boolean beforeUseHandCard(Card card,List<Card> targetList){
+        List<Card> cardList=getObserves(card);
+        boolean intercept=false;
+        for(int i=0;i<cardList.size();i++){
+            if(cardList.get(i).beforePlayCard(card, targetList)){
+               intercept=true;
+            }
+        }
+        return intercept;
+
+    }
+
+    /**
+     * 向指定区域内插入一张卡牌
+     * @param card
+     * @param cardManager
+     * @return
+     */
+    public boolean insertCardToTargetArea(Card card, ICardGroupManager cardManager){
+        if(cardManager.insertCard(card)){
+            //成功插入就询问所有观察者
+            List<Card> cardList=getObserves(card);
+            for(int i=0;i<cardList.size();i++){
+                cardList.get(i).onCardGroupInsert(cardManager,card);
+            }
+        }
+        deathSettlement();
+        return true;
+    }
+
+    /**
+     * 死亡结算
+     */
+    public void deathSettlement(){
+
+    }
+
+    /**
+     * 获取观察者
+     * @param card
+     * @return
+     */
+    protected final List<Card> getObserves(Card card){
+        List<Card> cardList=new ArrayList<>();//集合中的顺序是 友方随从 敌方随从 敌方奥秘
+        cardList.addAll(getManager(card.isUserHero()).getIBattleFieldManager().getCardList(Card.class));
+        cardList.addAll(getManager(!card.isUserHero()).getIBattleFieldManager().getCardList(Card.class));
+        cardList.addAll(getManager(!card.isUserHero()).getISecretAreaManager().getCardList(SecretSpellCard.class));
+        return cardList;
     }
 
     public abstract boolean canInsertCardToTargetArea(Card card, HeroManager heroManager);

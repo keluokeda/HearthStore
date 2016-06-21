@@ -1,7 +1,9 @@
 package com.wangxiaqiwuhai.com.hearthstore.cardLibrary.Spell;
 
 import com.wangxiaqiwuhai.com.hearthstore.card.Card;
+import com.wangxiaqiwuhai.com.hearthstore.card.MinionCard;
 import com.wangxiaqiwuhai.com.hearthstore.card.SecretSpellCard;
+import com.wangxiaqiwuhai.com.hearthstore.interfaces.ICardGroupManager;
 
 import java.util.List;
 import java.util.Objects;
@@ -25,7 +27,27 @@ public class CounterSpell extends SecretSpellCard {
     }
 
     @Override
-    public void beforeUseCard(Card card, List<Card> cardList) {
+    public boolean beforePlayCard(Card card, List<Card> cardList) {
+        return false;
+    }
+
+    @Override
+    public boolean afterPlayCard(Card card, List<Card> cardList) {
+        return false;
+    }
+
+    @Override
+    public void beforeSummonMinion(MinionCard minionCard) {
+
+    }
+
+    @Override
+    public void afterSummonMinion(MinionCard minionCard) {
+
+    }
+
+    @Override
+    public void onCardGroupInsert(ICardGroupManager cardGroupManager, Card targetCard) {
 
     }
 

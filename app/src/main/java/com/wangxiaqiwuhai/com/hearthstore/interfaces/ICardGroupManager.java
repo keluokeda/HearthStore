@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * 卡牌容器抽象管理父类
  */
-public interface ICardManager extends IAction{
+public interface ICardGroupManager extends IAction{
     /**
      * 向卡牌容器中插入卡牌
      * @param card 要插入的卡

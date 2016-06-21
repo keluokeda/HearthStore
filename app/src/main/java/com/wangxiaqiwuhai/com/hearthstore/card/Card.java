@@ -3,11 +3,8 @@ package com.wangxiaqiwuhai.com.hearthstore.card;
 import android.graphics.Color;
 
 import com.wangxiaqiwuhai.com.hearthstore.R;
-import com.wangxiaqiwuhai.com.hearthstore.interfaces.IAction;
 import com.wangxiaqiwuhai.com.hearthstore.interfaces.ICardAction;
-import com.wangxiaqiwuhai.com.hearthstore.interfaces.ICardManager;
-import com.wangxiaqiwuhai.com.hearthstore.interfaces.IDamageManager;
-import com.wangxiaqiwuhai.com.hearthstore.interfaces.IGameManager;
+import com.wangxiaqiwuhai.com.hearthstore.interfaces.ICardGroupManager;
 import com.wangxiaqiwuhai.com.hearthstore.manager.GameManager;
 
 /**
@@ -86,7 +83,7 @@ public abstract class Card implements ICardAction{
      * <p>{@link com.wangxiaqiwuhai.com.hearthstore.interfaces.IHandCardManager}</p>
      * <p>{@link com.wangxiaqiwuhai.com.hearthstore.interfaces.IBattleFieldManager}</p>
      */
-    protected ICardManager mICardManager;
+    protected ICardGroupManager mICardManager;
 
     public TargetType getTargetType() {
         return mTargetType;
@@ -96,13 +93,13 @@ public abstract class Card implements ICardAction{
         mTargetType = targetType;
     }
 
-    public ICardManager getICardManager() {
+    public ICardGroupManager getICardManager() {
         return mICardManager;
     }
 
-    public void setICardManager(ICardManager ICardManager) {
+    public void setICardManager(ICardGroupManager ICardManager) {
         mICardManager = ICardManager;
-        mICardManager.insertCard(this);
+
     }
 
     /**
