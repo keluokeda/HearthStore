@@ -51,4 +51,10 @@ public interface IAction {
 
     void takeDamage(int damage, Card.TargetType targetType);
 
+    /**
+     * 随从死亡
+     * @param minion 死亡的随从，此时随从已经在墓地
+     */
+    void onMinionDie(MinionCard minion);
+
 }

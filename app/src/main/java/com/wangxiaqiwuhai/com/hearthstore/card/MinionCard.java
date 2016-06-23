@@ -26,5 +26,7 @@ public abstract class MinionCard extends AbsCard{
         target.mHealth=target.mHealth-source.mAttack;
     }
 
+    public void setToBeDestroy(boolean destroy){
 
+    }
 }

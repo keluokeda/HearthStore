@@ -83,7 +83,7 @@ public abstract class Card implements ICardAction{
      * <p>{@link com.wangxiaqiwuhai.com.hearthstore.interfaces.IHandCardManager}</p>
      * <p>{@link com.wangxiaqiwuhai.com.hearthstore.interfaces.IBattleFieldManager}</p>
      */
-    protected ICardGroupManager mICardManager;
+    protected ICardGroupManager mICardGroupManager;
 
     public TargetType getTargetType() {
         return mTargetType;
@@ -93,12 +93,12 @@ public abstract class Card implements ICardAction{
         mTargetType = targetType;
     }
 
-    public ICardGroupManager getICardManager() {
-        return mICardManager;
+    public ICardGroupManager getICardGroupManager() {
+        return mICardGroupManager;
     }
 
-    public void setICardManager(ICardGroupManager ICardManager) {
-        mICardManager = ICardManager;
+    public void setICardGroupManager(ICardGroupManager ICardGroupManager) {
+        mICardGroupManager = ICardGroupManager;
 
     }
 

@@ -4,6 +4,8 @@ import com.wangxiaqiwuhai.com.hearthstore.card.Card;
 import com.wangxiaqiwuhai.com.hearthstore.card.MinionCard;
 import com.wangxiaqiwuhai.com.hearthstore.card.SecretSpellCard;
 import com.wangxiaqiwuhai.com.hearthstore.interfaces.ICardGroupManager;
+import com.wangxiaqiwuhai.com.hearthstore.interfaces.IDamageExecuter;
+import com.wangxiaqiwuhai.com.hearthstore.interfaces.IDamageManager;
 
 import java.util.List;
 import java.util.Objects;
@@ -65,6 +67,14 @@ public class CounterSpell extends SecretSpellCard {
     public void onBattlecry(List<Card> cardList) {
         //火球术 打在敌方连上
         mGameManager.takeDamage(this,cardList,6,null);
+        mGameManager.takeDamage(this, cardList, 4, new IDamageManager() {
+            @Override
+            public void computeDamage(int damage, List<Card> cardList, Card source, IDamageExecuter damageExecuter) {
+                for(int i=0;i<cardList.size();i++){
+                    cardList.get(i).takeDamage(4,null);
+                }
+            }
+        });
     }
 
 
@@ -94,6 +104,12 @@ public class CounterSpell extends SecretSpellCard {
 
     }
 
+    @Override
+    public void onMinionDie(MinionCard minion) {
+        if(mGameManager.getManager(isUserHero()).getIBattleFieldManager().isEmpty()){
+            return;
+        }
+    }
 
 
     @Override

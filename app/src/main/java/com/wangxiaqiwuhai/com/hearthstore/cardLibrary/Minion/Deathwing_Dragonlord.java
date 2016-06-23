@@ -3,6 +3,7 @@ package com.wangxiaqiwuhai.com.hearthstore.cardLibrary.Minion;
 import com.wangxiaqiwuhai.com.hearthstore.card.Card;
 import com.wangxiaqiwuhai.com.hearthstore.card.HeroCard;
 import com.wangxiaqiwuhai.com.hearthstore.card.MinionCard;
+import com.wangxiaqiwuhai.com.hearthstore.card.SpellCard;
 import com.wangxiaqiwuhai.com.hearthstore.interfaces.IBattleFieldManager;
 import com.wangxiaqiwuhai.com.hearthstore.interfaces.ICardGroupManager;
 import com.wangxiaqiwuhai.com.hearthstore.interfaces.IHandCardManager;
@@ -21,7 +22,10 @@ public class Deathwing_Dragonlord extends MinionCard {
 
     @Override
     public void onTurnStart() {
+        List<MinionCard> cardList = mGameManager.getManager(isUserHero()).getIBattleFieldManager().getCardList(MinionCard.class);
+        for(int i=0;i<cardList.size();i++){
 
+        }
     }
 
     @Override
@@ -31,9 +35,18 @@ public class Deathwing_Dragonlord extends MinionCard {
 
     @Override
     public boolean beforePlayCard(Card card, List<Card> cardList) {
-        if (card.isUserHero() == isUserHero()) {
-            Card shengliCard = null;//插入一张卡牌到战场
-            mGameManager.insertCardToTargetArea(shengliCard, mGameManager.getManager(shengliCard.isUserHero()).getIBattleFieldManager());
+        if (card.isUserHero() == isUserHero() && this != card) {//使用的卡是友方英雄的 且 不是自己本身
+            MinionCard shengliCard = null;//插入一张卡牌到战场
+            mGameManager.summonMinion(shengliCard);
+        }
+        if (card.isUserHero() == isUserHero() && card instanceof SpellCard) {
+            //使用一张法术
+            //紫罗兰
+            MinionCard minionCard = null;
+            mGameManager.summonMinion(minionCard);
+
+            //加基森
+            mGameManager.getManager(isUserHero()).drawCardFromDeck();
         }
         return false;
     }
@@ -56,11 +69,11 @@ public class Deathwing_Dragonlord extends MinionCard {
     @Override
     public void onCardGroupInsert(ICardGroupManager cardGroupManager, Card targetCard) {
         //友方战场来了一个随从，就对敌方一个随机角色造成一点伤害
-        if(cardGroupManager==mGameManager.getManager(isUserHero()).getIBattleFieldManager()){
-            List<Card> cardList=new ArrayList<>();
-            cardList.addAll(mGameManager.getManager(!isUserHero()).getIBattleFieldManager().getCardList(Card.class));
+        if (cardGroupManager == mGameManager.getManager(isUserHero()).getIBattleFieldManager()) {
+            List<Card> cardList = new ArrayList<>();
+            cardList.addAll(mGameManager.getManager(!isUserHero()).getIBattleFieldManager().getCardList(MinionCard.class));
             cardList.add(mGameManager.getManager(!isUserHero()).getHeroCard());
-            mGameManager.takeDamage(this,cardList,1,null);
+            mGameManager.takeDamage(this, cardList, 1, null);
         }
     }
 
@@ -92,7 +105,24 @@ public class Deathwing_Dragonlord extends MinionCard {
 
     @Override
     public void takeDamage(int damage, TargetType targetType) {
+        //龙蛋 受到一点伤害 召唤一个小龙
+        if(!(getICardGroupManager() instanceof IBattleFieldManager)){
+            return;//进行严格的卡牌容器检查  必须在战场上才可以发动效果
+        }
+        MinionCard minionCard=null;
+        mGameManager.summonMinion(minionCard);
+    }
 
+    @Override
+    public void onMinionDie(MinionCard minion) {
+        //战利品
+        if(minion==this){
+            mGameManager.getManager(isUserHero()).drawCardFromDeck();
+        }
+        //洗脚
+        if(minion.isUserHero()==isUserHero()&&minion!=this){
+            mGameManager.getManager(isUserHero()).drawCardFromDeck();
+        }
     }
 
     @Override
