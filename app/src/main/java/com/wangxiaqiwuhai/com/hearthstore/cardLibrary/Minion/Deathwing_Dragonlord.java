@@ -11,6 +11,7 @@ import com.wangxiaqiwuhai.com.hearthstore.interfaces.IHandCardManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Random;
 
 /**
  * 被腐化的死亡之翼
@@ -22,9 +23,22 @@ public class Deathwing_Dragonlord extends MinionCard {
 
     @Override
     public void onTurnStart() {
+
+        List<MinionCard> handCardList=mGameManager.getManager(isUserHero()).getIHandCardManager().getCardList(MinionCard.class);
+        if(handCardList!=null&&!handCardList.isEmpty()){
+            int position=new Random().nextInt(handCardList.size());
+            MinionCard minionCard=handCardList.get(position);
+            mGameManager.getManager(isUserHero()).getIBattleFieldManager().remove(this);
+            mGameManager.summonMinion(minionCard);
+            mGameManager.getManager(isUserHero()).getIHandCardManager().remove(minionCard);
+            mGameManager.getManager(isUserHero()).getIHandCardManager().insertCard(this,position);
+
+        }
+
+
         List<MinionCard> cardList = mGameManager.getManager(isUserHero()).getIBattleFieldManager().getCardList(MinionCard.class);
         for(int i=0;i<cardList.size();i++){
-
+            cardList.get(i).setToBeDestroy(true);
         }
     }
 

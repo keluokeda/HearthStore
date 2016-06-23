@@ -54,9 +54,13 @@ public interface ICardGroupManager<C extends Card> extends IAction{
 
     /**
      * 移除指定的卡
-     * @return
      */
     C remove(C card);
+
+    /**
+     * 获取卡牌在容器中的位置
+     */
+    int getCardPosition(C card);
 
     /**
      * 容器是否是空的
