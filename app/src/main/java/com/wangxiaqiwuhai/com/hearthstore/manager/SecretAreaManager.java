@@ -1,40 +1,40 @@
 package com.wangxiaqiwuhai.com.hearthstore.manager;
 
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
 import com.wangxiaqiwuhai.com.hearthstore.card.Card;
 import com.wangxiaqiwuhai.com.hearthstore.card.MinionCard;
+import com.wangxiaqiwuhai.com.hearthstore.card.SecretSpellCard;
 import com.wangxiaqiwuhai.com.hearthstore.interfaces.ICardGroupManager;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 牌库管理类
+ * 奥秘区域
  */
-public class DeckCardManager extends TextView implements ICardGroupManager.IDeckCardManager {
-
-    public DeckCardManager(Context context) {
-        super(context);
-    }
-
-    public DeckCardManager(Context context, AttributeSet attrs) {
-        super(context, attrs);
-    }
-
-    public DeckCardManager(Context context, AttributeSet attrs, int defStyleAttr) {
+public class SecretAreaManager extends TextView implements ICardGroupManager.ISecretAreaManager{
+    public SecretAreaManager(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
+    public SecretAreaManager(Context context) {
+        super(context);
+    }
+
+    public SecretAreaManager(Context context, AttributeSet attrs) {
+        super(context, attrs);
+    }
+
     @Override
-    public boolean insertCard(Card card) {
+    public boolean insertCard(SecretSpellCard card) {
         return false;
     }
 
     @Override
-    public boolean insertCard(Card card, int position) {
+    public boolean insertCard(SecretSpellCard card, int position) {
         return false;
     }
 
@@ -49,17 +49,17 @@ public class DeckCardManager extends TextView implements ICardGroupManager.IDeck
     }
 
     @Override
-    public Card remove(int position) {
+    public SecretSpellCard remove(int position) {
         return null;
     }
 
     @Override
-    public Card remove(Card card) {
+    public SecretSpellCard remove(SecretSpellCard card) {
         return null;
     }
 
     @Override
-    public int getCardPosition(Card card) {
+    public int getCardPosition(SecretSpellCard card) {
         return 0;
     }
 
@@ -74,22 +74,22 @@ public class DeckCardManager extends TextView implements ICardGroupManager.IDeck
     }
 
     @Override
-    public int getCount(Class<? extends Card> cardClazz) {
+    public int getCount(Class<? extends SecretSpellCard> cardClazz) {
         return 0;
     }
 
     @Override
-    public boolean isContainsTargetClassCard(Class<? extends Card> clazz) {
+    public boolean isContainsTargetClassCard(Class<? extends SecretSpellCard> clazz) {
         return false;
     }
 
     @Override
-    public <T extends Card> List<T> getCardList(Class<T> tClass) {
-        return null;
+    public <T extends SecretSpellCard> List<T> getCardList(Class<T> tClass) {
+        return new ArrayList<>();
     }
 
     @Override
-    public <T extends Card> List<T> removeCardList(Class<T> tClass) {
+    public <T extends SecretSpellCard> List<T> removeCardList(Class<T> tClass) {
         return null;
     }
 

@@ -1,6 +1,5 @@
 package com.wangxiaqiwuhai.com.hearthstore.manager;
 
-
 import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
@@ -12,19 +11,19 @@ import com.wangxiaqiwuhai.com.hearthstore.interfaces.ICardGroupManager;
 import java.util.List;
 
 /**
- * 牌库管理类
+ * 墓地
  */
-public class DeckCardManager extends TextView implements ICardGroupManager.IDeckCardManager {
+public class CemeteryManager extends TextView implements ICardGroupManager.ICemeteryManager {
 
-    public DeckCardManager(Context context) {
+    public CemeteryManager(Context context) {
         super(context);
     }
 
-    public DeckCardManager(Context context, AttributeSet attrs) {
+    public CemeteryManager(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public DeckCardManager(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CemeteryManager(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -40,7 +39,7 @@ public class DeckCardManager extends TextView implements ICardGroupManager.IDeck
 
     @Override
     public int getMaxSize() {
-        return 0;
+        return Integer.MAX_VALUE;
     }
 
     @Override

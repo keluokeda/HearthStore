@@ -5,13 +5,12 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.wangxiaqiwuhai.com.hearthstore.R;
-import com.wangxiaqiwuhai.com.hearthstore.interfaces.IHandCardManager;
 import com.wangxiaqiwuhai.com.hearthstore.manager.GameManager;
+import com.wangxiaqiwuhai.com.hearthstore.manager.HandCardManager;
 import com.wangxiaqiwuhai.com.hearthstore.utils.DensityUtil;
 
 /**
@@ -22,7 +21,7 @@ public class CardView extends FrameLayout implements View.OnClickListener {
     private TextView tvHealth;
     private TextView tvCost;
     private TextView tvName;
-    private TextView tvDescription;
+    //private TextView tvDescription;
     private View viewQuality;
     private TextView tvRace;
     private View baseView;
@@ -50,7 +49,7 @@ public class CardView extends FrameLayout implements View.OnClickListener {
         tvHealth = (TextView) baseView.findViewById(R.id.health);
         tvCost = (TextView) baseView.findViewById(R.id.cost);
         tvName = (TextView) baseView.findViewById(R.id.name);
-        tvDescription = (TextView) baseView.findViewById(R.id.description);
+        //tvDescription = (TextView) baseView.findViewById(R.id.description);
         viewQuality = baseView.findViewById(R.id.quality);
         tvRace = (TextView) findViewById(R.id.race);
         tvHero = (TextView) baseView.findViewById(R.id.heroclass);
@@ -71,8 +70,8 @@ public class CardView extends FrameLayout implements View.OnClickListener {
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int width;
         int height;
-        width = DensityUtil.dip2px(getContext(), 100);
-        height = DensityUtil.dip2px(getContext(), 160);
+        width = DensityUtil.dip2px(getContext(), 64);
+        height = DensityUtil.dip2px(getContext(), 60);
         setMeasuredDimension(width, height);
         super.onMeasure(MeasureSpec.makeMeasureSpec(width, widthMode), MeasureSpec.makeMeasureSpec(height, heightMode));
 
@@ -80,17 +79,17 @@ public class CardView extends FrameLayout implements View.OnClickListener {
 
     public void initCardData() {
         tvCost.setText("" + mCard.mCost);
-        if (!(mCard instanceof SpellCard)) {
-            tvAttack.setText("" + mCard.mAttack);
-            tvHealth.setText("" + mCard.mHealth);
-
-        }else {
+        if (mCard instanceof AbsHealthCard) {
+            AbsHealthCard absHealthCard = (AbsHealthCard) mCard;
+            tvAttack.setText("" + absHealthCard.mMaxAttack);
+            tvHealth.setText("" + absHealthCard.mMaxHealth);
+        } else {
             tvAttack.setText("");
             tvHealth.setText("");
         }
 
         tvName.setText(mCard.mCardName);
-        tvDescription.setText(mCard.mDescription);
+        //tvDescription.setText(mCard.mDescription);
         viewQuality.setBackgroundResource(mCard.mQuality.getColorResource());
         if (TextUtils.isEmpty(mCard.mRace.toString())) {
             tvRace.setVisibility(GONE);
@@ -103,20 +102,12 @@ public class CardView extends FrameLayout implements View.OnClickListener {
 
 
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-    }
 
     @Override
     public void onClick(View v) {
-        if(v==this){
-            GameManager.getInstance().useCardFromHand(mCard);
+        if(mCard.getICardGroupManager() instanceof HandCardManager){
+            //当前卡牌在手牌 点击表示要出牌
+            mCard.mGameManager.useCardFromHand(mCard);
         }
     }
 }

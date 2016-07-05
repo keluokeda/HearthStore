@@ -1,40 +1,48 @@
 package com.wangxiaqiwuhai.com.hearthstore.manager;
 
 
+import android.view.View;
+
+import com.wangxiaqiwuhai.com.hearthstore.R;
 import com.wangxiaqiwuhai.com.hearthstore.card.Card;
 import com.wangxiaqiwuhai.com.hearthstore.card.HeroCard;
 import com.wangxiaqiwuhai.com.hearthstore.card.WeaponCard;
-import com.wangxiaqiwuhai.com.hearthstore.interfaces.IAction;
-import com.wangxiaqiwuhai.com.hearthstore.interfaces.IBattleFieldManager;
-import com.wangxiaqiwuhai.com.hearthstore.interfaces.ICemeteryManager;
+import com.wangxiaqiwuhai.com.hearthstore.cardLibrary.hero.JiHero;
+import com.wangxiaqiwuhai.com.hearthstore.interfaces.ICardGroupManager;
 import com.wangxiaqiwuhai.com.hearthstore.interfaces.ICrystalManager;
-import com.wangxiaqiwuhai.com.hearthstore.interfaces.IDeckCardManager;
-import com.wangxiaqiwuhai.com.hearthstore.interfaces.IHandCardManager;
-import com.wangxiaqiwuhai.com.hearthstore.interfaces.IHeroManager;
-import com.wangxiaqiwuhai.com.hearthstore.interfaces.ISecretAreaManager;
 
 import java.util.Objects;
 
 /**
- *英雄管理类
+ * 英雄管理类
  */
-public abstract class HeroManager implements IHeroManager{
-    boolean isUser;
+public  class HeroManager {
+    Card.Hero mHero;
 
     HeroCard mHeroCard;
     WeaponCard mWeaponCard;//武器区域
-    ISecretAreaManager mISecretAreaManager;//奥秘区域
+    ICardGroupManager.ISecretAreaManager mISecretAreaManager;//奥秘区域
 
 
-    IDeckCardManager mIDeckCardManager;//牌库
-    ICemeteryManager mICemeteryManager;//坟场
-    IHandCardManager mIHandCardManager;//手牌
-
+    ICardGroupManager.IDeckCardManager mIDeckCardManager;//牌库
+    ICardGroupManager.ICemeteryManager mICemeteryManager;//坟场
+    HandCardManager mIHandCardManager;//手牌
+    BattleFieldManager mIBattleFieldManager;//战场
     ICrystalManager mICrystalManager;//水晶
 
-    IBattleFieldManager mIBattleFieldManager;//战场
+    public HeroManager(View baseView,Card.Hero hero,   HandCardManager IHandCardManager, BattleFieldManager IBattleFieldManager) {
+        mHero = hero;
+        mISecretAreaManager = (ICardGroupManager.ISecretAreaManager) baseView.findViewById(R.id.secret_area);
+        mIDeckCardManager = (ICardGroupManager.IDeckCardManager) baseView.findViewById(R.id.deck_card);
+        mICemeteryManager = (ICardGroupManager.ICemeteryManager) baseView.findViewById(R.id.cemetery);
+        mICrystalManager = (com.wangxiaqiwuhai.com.hearthstore.interfaces.ICrystalManager) baseView.findViewById(R.id.crystal);
+        mIHandCardManager = IHandCardManager;
+        mIBattleFieldManager = IBattleFieldManager;
 
-    void heroDamage(int damage){
+
+    }
+
+    public void heroDamage(int damage) {
 
     }
 
@@ -50,19 +58,19 @@ public abstract class HeroManager implements IHeroManager{
         return mWeaponCard;
     }
 
-    public ISecretAreaManager getISecretAreaManager() {
+    public ICardGroupManager.ISecretAreaManager getISecretAreaManager() {
         return mISecretAreaManager;
     }
 
-    public IDeckCardManager getIDeckCardManager() {
+    public ICardGroupManager.IDeckCardManager getIDeckCardManager() {
         return mIDeckCardManager;
     }
 
-    public ICemeteryManager getICemeteryManager() {
+    public ICardGroupManager.ICemeteryManager getICemeteryManager() {
         return mICemeteryManager;
     }
 
-    public IHandCardManager getIHandCardManager() {
+    public HandCardManager getIHandCardManager() {
         return mIHandCardManager;
     }
 
@@ -70,77 +78,14 @@ public abstract class HeroManager implements IHeroManager{
         return mICrystalManager;
     }
 
-    public IBattleFieldManager getIBattleFieldManager() {
+    public BattleFieldManager getIBattleFieldManager() {
         return mIBattleFieldManager;
     }
 
-    @Override
-    public void onTurnStart() {
-        mIBattleFieldManager.onTurnStart();
-        mICrystalManager.onTurnStart();
-        drawCardFromDeck();
-    }
-
-    /**
-     * 让当前英雄从牌库中抽取一张卡
-     */
-    public  void drawCardFromDeck(){
-        Card card=mIDeckCardManager.remove(0);
-        drawCardFromDeck(card);
-    }
-
-    public void drawCardFromDeck(Card card){
-        if(card==null){
-            heroDamage(mIDeckCardManager.getTiredDamage());
-        }else {
-            //成功从牌库抽到卡牌
-            //先把卡牌插入到手牌或者墓地
-            if(!mIHandCardManager.insertCard(card)) {
-                mICemeteryManager.insertCard(card);
-            }
-            //在执行卡牌的异能
-            card.onDrawCardFromDeck(card);
-
-        }
-    }
-
-    /**
-     * 向手牌中插入一张牌
-     * @param card 要插入的牌
-     */
-    public void insertCardToHandCard(Card card){
-        if(card==null){
-            return;
-        }
-
-    }
-
-    @Override
-    public void onTurnEnd() {
-        mIBattleFieldManager.onTurnEnd();
-    }
 
 
 
 
 
-    @Override
-    public void beforeAttack(Objects source, Objects target) {
 
-    }
-
-    @Override
-    public void onAttack(Objects source, Objects target) {
-
-    }
-
-    @Override
-    public void afterAttack(Objects source, Objects target) {
-
-    }
-
-    @Override
-    public void takeDamage(int damage,Card.TargetType targetType) {
-
-    }
 }

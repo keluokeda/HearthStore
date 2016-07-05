@@ -1,131 +1,109 @@
 package com.wangxiaqiwuhai.com.hearthstore.cardLibrary.Spell;
 
+import android.support.annotation.NonNull;
+
 import com.wangxiaqiwuhai.com.hearthstore.card.Card;
+import com.wangxiaqiwuhai.com.hearthstore.card.CardWrapper;
 import com.wangxiaqiwuhai.com.hearthstore.card.MinionCard;
 import com.wangxiaqiwuhai.com.hearthstore.card.SecretSpellCard;
+import com.wangxiaqiwuhai.com.hearthstore.card.SpellCard;
 import com.wangxiaqiwuhai.com.hearthstore.interfaces.ICardGroupManager;
-import com.wangxiaqiwuhai.com.hearthstore.interfaces.IDamageExecuter;
-import com.wangxiaqiwuhai.com.hearthstore.interfaces.IDamageManager;
+import com.wangxiaqiwuhai.com.hearthstore.manager.GameManager;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * 法术反制
  */
-public class CounterSpell extends SecretSpellCard {
-    public CounterSpell() {
-        super(3, CardHeroClass.Mage, Quality.Rare, "法术反制", "反制敌方法术");
-    }
+public abstract class CounterSpell extends SecretSpellCard {
+    public CounterSpell(Quality quality, Race race, CardHeroClass cardHeroClass, Type type, CharSequence cardName, CharSequence description, int cost, Sets sets, Hero hero, GameManager gameManager) {
+        super(quality, race, cardHeroClass, type, cardName, description, cost, sets, hero, gameManager);
 
-    @Override
-    public void onTurnStart() {
 
-    }
+        addEvent(EventType.MAKE_FUNCTION, new AbsEvent(this) {
 
-    @Override
-    public void onTurnEnd() {
-
-    }
-
-    @Override
-    public boolean beforePlayCard(Card card, List<Card> cardList) {
-        return false;
-    }
-
-    @Override
-    public boolean afterPlayCard(Card card, List<Card> cardList) {
-        return false;
-    }
-
-    @Override
-    public void beforeSummonMinion(MinionCard minionCard) {
-
-    }
-
-    @Override
-    public void afterSummonMinion(MinionCard minionCard) {
-
-    }
-
-    @Override
-    public void onCardGroupInsert(ICardGroupManager cardGroupManager, Card targetCard) {
-
-    }
-
-    @Override
-    public void onUseCard(Card card, List<Card> cardList) {
-
-    }
-
-    @Override
-    public void onDrawCardFromDeck(Card card) {
-
-    }
-
-    @Override
-    public void onBattlecry(List<Card> cardList) {
-        //火球术 打在敌方连上
-        mGameManager.takeDamage(this,cardList,6,null);
-        mGameManager.takeDamage(this, cardList, 4, new IDamageManager() {
             @Override
-            public void computeDamage(int damage, List<Card> cardList, Card source, IDamageExecuter damageExecuter) {
-                for(int i=0;i<cardList.size();i++){
-                    cardList.get(i).takeDamage(4,null);
+            public void run(Card source, @NonNull CardWrapper target) {
+                if (
+                        (CounterSpell.this.getHero() != mGameManager.getCurrentActiveHero()
+                        ) && (
+                                (source instanceof SpellCard) && (target.getOriginalCard() != null && target.getOriginalCard() instanceof MinionCard)
+                        )
+                        ) {
+                    MinionCard minionCard = null;
+                    mGameManager.summonMinion(minionCard);
+                    target.setOriginalCard(minionCard);
+                }
+
+                target.setDamage(6);
+                mGameManager.takeDamage(source, target);
+            }
+        });
+
+        //如果一个法术分为多个步骤 可以认为是多次战吼 因为每个步骤的结算队列不同
+        //暴风雪 先造成2点伤害 在 冻结所有随从
+        addEvent(EventType.MAKE_FUNCTION, new AbsEvent(this) {
+            @Override
+            public void run(Card source, @NonNull CardWrapper target) {
+                if (CounterSpell.this == source) {
+                    //获取当前卡牌所属英雄 对面英雄的 所有战场随从
+                    List<MinionCard> enemyMinionList = mGameManager.getHeroManager(source.getHero().getSideHero()).getIBattleFieldManager().getCardList(MinionCard.class);
+                    //锁定队列
+                    enemyMinionList = new ArrayList<>(enemyMinionList);
+                    for (int i = 0; i < enemyMinionList.size(); i++) {
+                        MinionCard card = enemyMinionList.get(i);
+                        CardWrapper cardWrapper = new CardWrapper();
+                        cardWrapper.setOriginalCard(card);
+                        cardWrapper.setDamage(2);
+                        mGameManager.takeDamage(source, cardWrapper);
+                    }
                 }
             }
         });
-    }
+        addEvent(EventType.MAKE_FUNCTION, new AbsEvent(this) {
+            @Override
+            public void run(Card source, @NonNull CardWrapper target) {
+                if (CounterSpell.this == source) {
+                    //获取当前卡牌所属英雄 对面英雄的 所有战场随从
+                    List<MinionCard> enemyMinionList = mGameManager.getHeroManager(source.getHero().getSideHero()).getIBattleFieldManager().getCardList(MinionCard.class);
+                    //锁定队列
+                    enemyMinionList = new ArrayList<>(enemyMinionList);
+                    for (int i = 0; i < enemyMinionList.size(); i++) {
+
+                    }
+                }
+            }
+
+        });
 
 
+        //智慧祝福
+        addEvent(EventType.MAKE_FUNCTION, new AbsEvent(this) {
+            @Override
+            public void run(Card source, @NonNull final CardWrapper target) {
+                if (source == getAttachCard()) {
+                    //发起卡就是当前卡
 
-    @Override
-    public void afterUseCard(Card card, Objects target) {
+                    if (target.getOriginalCard() != null && target.getOriginalCard().getICardGroupManager() instanceof ICardGroupManager.IBattleFieldManager) {
+                        //目标卡在场面上
 
-    }
+                        //为目标添加一个攻击前的响应事件
 
-    @Override
-    public void beforeAttack(Objects source, Objects target) {
+                        target.getOriginalCard().addEvent(EventType.BEFORE_ATTACK, new AbsEvent(target.getOriginalCard()) {
+                            @Override
+                            public void run(Card source, @NonNull CardWrapper target) {
+                                if (source == this.getAttachCard()) {
+                                    mGameManager.heroDrawCardFromDeckToHand(getHero());
+                                }
+                            }
+                        });
+                    }
+                }
 
-    }
+            }
+        });
 
-    @Override
-    public void onAttack(Objects source, Objects target) {
-
-    }
-
-    @Override
-    public void afterAttack(Objects source, Objects target) {
-
-    }
-
-    @Override
-    public void takeDamage(int damage,TargetType targetType) {
-
-    }
-
-    @Override
-    public void onMinionDie(MinionCard minion) {
-        if(mGameManager.getManager(isUserHero()).getIBattleFieldManager().isEmpty()){
-            return;
-        }
-    }
-
-
-    @Override
-    public void onDeathrattle() {
-
-    }
-
-
-
-    @Override
-    public void onTakeDamage(int damage, Card source, Card target) {
-
-    }
-
-    @Override
-    public void afterTakeDamage(int damage, Card source, Card target) {
 
     }
 }

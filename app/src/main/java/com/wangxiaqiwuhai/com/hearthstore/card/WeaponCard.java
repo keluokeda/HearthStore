@@ -1,18 +1,12 @@
 package com.wangxiaqiwuhai.com.hearthstore.card;
 
+import com.wangxiaqiwuhai.com.hearthstore.manager.GameManager;
+
 /**
  * 武器卡
  */
-public abstract class WeaponCard extends AbsCard {
-    public WeaponCard(int cost,int health,int attack, CardHeroClass cardHeroClass, Quality quality, CharSequence cardName, CharSequence description){
-        this.mCost=cost;
-        this.mAttack=attack;
-        this.mHealth=health;
-        this.mCardHeroClass=cardHeroClass;
-        this.mQuality=quality;
-        this.mRace=Race.None;//武器牌没有种类
-        this.mType=Type.Weapon;
-        this.mCardName=cardName;
-        this.mDescription=description;
+public abstract class WeaponCard extends AbsHealthCard {
+    public WeaponCard(Quality quality, Race race, CardHeroClass cardHeroClass, Type type, CharSequence cardName, CharSequence description, int cost, Sets sets, Hero hero, GameManager gameManager, int maxAttack, int maxHealth) {
+        super(quality, race, cardHeroClass, type, cardName, description, cost, sets, hero, gameManager, maxAttack, maxHealth);
     }
 }

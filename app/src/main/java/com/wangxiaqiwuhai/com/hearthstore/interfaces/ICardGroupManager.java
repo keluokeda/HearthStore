@@ -2,6 +2,7 @@ package com.wangxiaqiwuhai.com.hearthstore.interfaces;
 
 import com.wangxiaqiwuhai.com.hearthstore.card.Card;
 import com.wangxiaqiwuhai.com.hearthstore.card.MinionCard;
+import com.wangxiaqiwuhai.com.hearthstore.card.SecretSpellCard;
 
 import java.util.List;
 
@@ -9,7 +10,7 @@ import java.util.List;
 /**
  * 卡牌容器抽象管理父类
  */
-public interface ICardGroupManager<C extends Card> extends IAction{
+public interface ICardGroupManager<C extends Card>  {
     /**
      * 向卡牌容器中插入卡牌
      * @param card 要插入的卡
@@ -25,27 +26,16 @@ public interface ICardGroupManager<C extends Card> extends IAction{
      */
     boolean insertCard(C card,int position);
 
-    /**
-     * 向卡牌容器插入一堆卡
-     * @param cardList 要插入的卡的集合
-     * @return true表示成功插入 false表示失败
-     */
-    boolean insertCardList(List<? extends C> cardList);
-
 
     /**
-     * 移除容器中的一张卡
-     * @param card 要删除的卡
-     * @return true表示成功插入 false表示失败
+     * 获取容器的最大容量
      */
-    boolean deleteCard(C card);
+    int getMaxSize();
 
     /**
-     * 移除容器中的一堆卡
-     * @param cards 要删除的卡的集合
-     * @return true表示成功插入 false表示失败
+     * 刷新当前容器
      */
-    boolean deleteCard(List<? extends C> cards);
+    void refresh();
 
     /**
      * 移除容器中指定位置的卡
@@ -115,4 +105,48 @@ public interface ICardGroupManager<C extends Card> extends IAction{
 
 
 
+    /**
+     *墓地
+     */
+    interface ICemeteryManager extends ICardGroupManager<Card> {
+
+    }
+
+    /**
+     * 牌库类抽象接口
+     */
+    interface IDeckCardManager extends ICardGroupManager<Card> {
+
+
+    }
+
+
+
+    /**
+     * 被移除的卡牌 变形 爆牌
+     */
+    interface IOutSideCardManager extends ICardGroupManager<Card> {
+    }
+
+    /**
+     * 奥秘区域管理类
+     */
+    interface ISecretAreaManager extends ICardGroupManager<SecretSpellCard> {
+
+
+    }
+
+    /**
+     * 战场管理类
+     */
+    interface IBattleFieldManager extends ICardGroupManager<MinionCard> {
+
+    }
+
+    /**
+     * 无卡区
+     */
+    interface INoneCardAreaManager extends ICardGroupManager<Card>{
+
+    }
 }

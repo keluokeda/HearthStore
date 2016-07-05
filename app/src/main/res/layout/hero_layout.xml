@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal">
+
+    <com.wangxiaqiwuhai.com.hearthstore.manager.CemeteryManager
+        android:id="@+id/cemetery"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="墓地5"
+        android:textSize="12dp"
+        />
+
+    <com.wangxiaqiwuhai.com.hearthstore.manager.DeckCardManager
+        android:id="@+id/deck_card"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="牌库5"
+        android:textSize="12dp"
+        />
+
+    <TextView
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="5dp"
+        android:text="吉安娜"
+        android:textSize="14dp"
+        />
+
+    <com.wangxiaqiwuhai.com.hearthstore.card.WeaponCardView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="12dp"
+        android:text="5 5 3 \n 奥金斧"
+        android:gravity="center"
+        android:padding="5dp"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="12dp"
+        android:text="火焰冲击"
+        android:gravity="center"
+        android:padding="5dp"
+        />
+
+
+    <com.wangxiaqiwuhai.com.hearthstore.manager.SecretAreaManager
+        android:id="@+id/secret_area"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="12dp"
+        android:text="奥秘区0"
+        android:gravity="center"
+        android:padding="5dp"
+        />
+    <com.wangxiaqiwuhai.com.hearthstore.manager.CrystalManager
+        android:id="@+id/crystal"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:textSize="12dp"
+        android:text="5/9/0"
+        android:gravity="center"
+        android:padding="5dp"
+        />
+</LinearLayout>

@@ -5,7 +5,7 @@ import com.wangxiaqiwuhai.com.hearthstore.card.Card;
 /**
  *
  */
-public interface ICrystalManager extends IAction{
+public interface ICrystalManager  {
 
 
     /**

@@ -7,53 +7,38 @@
     android:fitsSystemWindows="true"
     android:orientation="vertical"
     tools:context="com.wangxiaqiwuhai.com.hearthstore.MainActivity">
-    <LinearLayout
+
+    <com.wangxiaqiwuhai.com.hearthstore.manager.HandCardManager
+        android:id="@+id/enemy_hand_card"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        >
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="攻击"
-            android:onClick="attack"
-            />
+        android:layout_height="60dp"/>
 
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/enemyhand"
+    <include
+        android:id="@+id/enemy_area"
+        layout="@layout/hero_layout"
+        />
+
+    <com.wangxiaqiwuhai.com.hearthstore.manager.BattleFieldManager
+        android:id="@+id/enemy_battle"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="2dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        >
+        android:layout_height="60dp"/>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/battlefield"
+    <com.wangxiaqiwuhai.com.hearthstore.manager.BattleFieldManager
+        android:id="@+id/your_battle"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="2dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        >
+        android:layout_height="60dp"
+        />
 
-    </LinearLayout>
+    <include
+        android:id="@+id/your_area"
+        layout="@layout/hero_layout"
+        />
 
-    <LinearLayout
-        android:id="@+id/herohand"
+    <com.wangxiaqiwuhai.com.hearthstore.manager.HandCardManager
+        android:id="@+id/your_hand_card"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:padding="2dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        >
+        android:layout_height="60dp"
+        />
 
-    </LinearLayout>
 
 </LinearLayout>

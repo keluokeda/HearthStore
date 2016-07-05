@@ -1,32 +1,30 @@
 package com.wangxiaqiwuhai.com.hearthstore.card;
 
+
+import com.wangxiaqiwuhai.com.hearthstore.manager.GameManager;
+
 /**
  * 随从卡
  */
-public abstract class MinionCard extends AbsCard{
+public abstract class MinionCard extends AbsHealthCard {
 
-    public MinionCard(int cost,int health,int attack,CardHeroClass cardHeroClass,Race race,Quality quality,CharSequence cardName,CharSequence description,boolean ownerIsHero){
-        this.mHealth=health;
-        this.mCost=cost;
-        this.mAttack=attack;
-        this.mCardHeroClass=cardHeroClass;
-        this.mQuality=quality;
-        this.mRace=race;
-        this.mType=Type.Minion;
-        this.mCardName=cardName;
-        this.mDescription=description;
-        this.ownerIsHero = ownerIsHero;
+
+    public MinionCard(Quality quality, Race race, CardHeroClass cardHeroClass, CharSequence cardName, CharSequence description, int cost, Sets sets, Hero hero, GameManager gameManager, int maxAttack, int maxHealth) {
+        super(quality, race, cardHeroClass, Type.Minion, cardName, description, cost, sets, hero, gameManager, maxAttack, maxHealth);
     }
 
-    /**
-     * 随从相互攻击
-     */
-    public static void minionAttack(MinionCard source,MinionCard target){
-        source.mHealth=source.mHealth-target.mAttack;
-        target.mHealth=target.mHealth-source.mAttack;
+    public boolean getDeathStatus() {
+        return toBeDestroy || (mMaxHealth <= 0);
     }
 
-    public void setToBeDestroy(boolean destroy){
-
+    public void setMinionMaxHealth(int maxHealth) {
+        this.mMaxHealth = maxHealth;
     }
+
+    public int getMinionMaxHealth() {
+        return this.mMaxHealth;
+    }
+
+
+
 }
